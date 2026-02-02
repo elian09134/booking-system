@@ -234,6 +234,7 @@ body {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -246,9 +247,12 @@ body {
 
 /* Pulse Animation for Stats */
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.05);
   }
@@ -256,4 +260,103 @@ body {
 
 .pulse-on-hover:hover {
   animation: pulse 0.3s ease;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 640px) {
+
+  /* Larger touch targets on mobile */
+  .btn {
+    padding: 14px 20px;
+    font-size: 15px;
+    min-height: 48px;
+  }
+
+  .input-field {
+    padding: 16px;
+    font-size: 16px;
+    /* Prevents zoom on iOS */
+    min-height: 52px;
+  }
+
+  /* Better spacing on mobile */
+  .glass-card {
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  /* Adjust form grids for mobile */
+  .mobile-stack {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Smaller badges on mobile */
+  .badge {
+    padding: 3px 10px;
+    font-size: 10px;
+  }
+
+  /* Adjust header sizes */
+  h1 {
+    font-size: 1.75rem !important;
+    line-height: 1.2 !important;
+  }
+
+  h2 {
+    font-size: 1.375rem !important;
+  }
+
+  /* Ensure full-width buttons on mobile */
+  .mobile-full-width {
+    width: 100% !important;
+  }
+}
+
+/* Safe area padding for iOS notch */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Improved touch feedback */
+@media (hover: none) and (pointer: coarse) {
+  .hover-card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+
+  .btn:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+}
+
+/* Table responsiveness */
+@media (max-width: 768px) {
+  .responsive-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .responsive-table table {
+    min-width: 600px;
+  }
+}
+
+/* Hide scrollbar on mobile for cleaner look */
+@media (max-width: 640px) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  * {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

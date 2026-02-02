@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { FiArrowLeft, FiUsers, FiCalendar, FiClock, FiCheck, FiAlertCircle } from 'react-icons/fi'
+import { FiArrowLeft, FiSquare, FiCalendar, FiClock, FiCheck, FiAlertCircle } from 'react-icons/fi'
 import Navbar from '@/components/Navbar'
 
-export default function MeetingRoomBookingPage() {
+export default function GlassRoomBookingPage() {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
@@ -43,8 +43,8 @@ export default function MeetingRoomBookingPage() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    item_type: 'meeting_room',
-                    item_name: 'Ruang Meeting Lantai 1',
+                    item_type: 'glass_room',
+                    item_name: 'Ruang Kaca Lantai 1',
                     requester_name: formData.requester_name,
                     division: formData.division,
                     purpose: formData.purpose,
@@ -105,12 +105,12 @@ export default function MeetingRoomBookingPage() {
 
                     {/* Header */}
                     <div className="glass-card p-6 mb-8 flex items-center gap-4">
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white shrink-0">
-                            <FiUsers className="w-8 h-8" />
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-500 flex items-center justify-center text-white shrink-0">
+                            <FiSquare className="w-8 h-8" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-bold">Ruang Meeting</h1>
-                            <p className="text-gray-500 dark:text-gray-400">Ruang Meeting Lantai 1</p>
+                            <h1 className="text-2xl font-bold">Ruang Kaca</h1>
+                            <p className="text-gray-500 dark:text-gray-400">Ruang Kaca Lantai 1</p>
                         </div>
                     </div>
 
@@ -154,8 +154,6 @@ export default function MeetingRoomBookingPage() {
                                 />
                             </div>
 
-
-
                             {/* Purpose */}
                             <div>
                                 <label className="block text-sm font-medium mb-2">Keperluan *</label>
@@ -164,7 +162,7 @@ export default function MeetingRoomBookingPage() {
                                     value={formData.purpose}
                                     onChange={handleChange}
                                     className="input-field min-h-[100px]"
-                                    placeholder="Jelaskan keperluan penggunaan ruang meeting"
+                                    placeholder="Jelaskan keperluan penggunaan ruang kaca"
                                     required
                                 />
                             </div>

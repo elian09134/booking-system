@@ -2,7 +2,78 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { FiUsers, FiMapPin, FiTruck, FiArrowRight, FiClock, FiCheckCircle, FiXCircle, FiLoader, FiCalendar } from 'react-icons/fi'
+import { FiUsers, FiMapPin, FiTruck, FiArrowRight, FiClock, FiCheckCircle, FiXCircle, FiLoader, FiCalendar, FiSquare } from 'react-icons/fi'
+
+// ... (existing imports)
+
+// ... (inside HomePage)
+
+const getItemIcon = (itemType: string) => {
+  switch (itemType) {
+    case 'meeting_room':
+      return <FiUsers className="w-4 h-4" />
+    case 'glass_room':
+      return <FiSquare className="w-4 h-4" />
+    case 'training_center':
+      return <FiMapPin className="w-4 h-4" />
+    case 'vehicle':
+      return <FiTruck className="w-4 h-4" />
+    default:
+      return <FiCalendar className="w-4 h-4" />
+  }
+}
+
+const getItemGradient = (itemType: string) => {
+  switch (itemType) {
+    case 'meeting_room':
+      return 'from-blue-500 to-cyan-500'
+    case 'glass_room':
+      return 'from-teal-500 to-emerald-500'
+    case 'training_center':
+      return 'from-purple-500 to-pink-500'
+    case 'vehicle':
+      return 'from-orange-500 to-red-500'
+    default:
+      return 'from-gray-500 to-gray-600'
+  }
+}
+
+// ... (formatDateTime function remains same)
+
+const bookingOptions = [
+  {
+    id: 'meeting-room',
+    title: 'Ruang Meeting',
+    description: 'Ruang Meeting Lantai 1',
+    icon: <FiUsers className="w-8 h-8" />,
+    gradient: 'from-blue-500 to-cyan-500',
+    href: '/booking/meeting-room',
+  },
+  {
+    id: 'glass-room',
+    title: 'Ruang Kaca',
+    description: 'Ruang Kaca Lantai 1',
+    icon: <FiSquare className="w-8 h-8" />,
+    gradient: 'from-teal-500 to-emerald-500',
+    href: '/booking/glass-room',
+  },
+  {
+    id: 'training-center',
+    title: 'Training Center',
+    description: 'Bandara Mas',
+    icon: <FiMapPin className="w-8 h-8" />,
+    gradient: 'from-purple-500 to-pink-500',
+    href: '/booking/training-center',
+  },
+  {
+    id: 'vehicle',
+    title: 'Kendaraan',
+    description: 'Xpander, Xenia, Livina, Avanza, Voxy',
+    icon: <FiTruck className="w-8 h-8" />,
+    gradient: 'from-orange-500 to-red-500',
+    href: '/booking/vehicle',
+  },
+]
 import Navbar from '@/components/Navbar'
 import BookingCalendar from '@/components/BookingCalendar'
 import StatusBadge from '@/components/StatusBadge'

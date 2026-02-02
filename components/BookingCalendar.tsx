@@ -151,24 +151,41 @@ export default function BookingCalendar({ bookedDates }: BookingCalendarProps) {
                     const booked = isDateBooked(day)
                     const pending = isDatePending(day)
                     const isCurrentDay = isSameDay(day, today)
+                    const activeBooking = booked || pending
+
+                    // Get short vehicle name for display
+                    const getVehicleShortName = (itemName: string) => {
+                        const name = itemName.toLowerCase()
+                        if (name.includes('xpander')) return 'XP'
+                        if (name.includes('xenia')) return 'XN'
+                        if (name.includes('livina')) return 'LV'
+                        if (name.includes('avanza')) return 'AV'
+                        if (name.includes('voxy')) return 'VX'
+                        return itemName.substring(0, 2).toUpperCase()
+                    }
 
                     return (
                         <div
                             key={day.toString()}
-                            className={`aspect-square p-1 rounded-lg flex flex-col items-center justify-center relative
+                            className={`aspect-square p-0.5 rounded-lg flex flex-col items-center justify-center relative
                 ${isCurrentDay ? 'ring-2 ring-blue-500' : ''}
                 ${booked ? getBookingColor(booked.item_type) + ' text-white' : ''}
                 ${pending && !booked ? 'bg-amber-100 dark:bg-amber-900/30' : ''}
                 ${!booked && !pending ? 'hover:bg-gray-100 dark:hover:bg-gray-700' : ''}
               `}
-                            title={booked ? `${booked.item_name} (Approved)` : pending ? `${pending.item_name} (Pending)` : ''}
+                            title={activeBooking ? `${activeBooking.item_name} (${activeBooking.status === 'approved' ? 'Approved' : 'Pending'})` : ''}
                         >
                             <span className={`text-sm ${booked ? 'font-bold' : ''}`}>
                                 {format(day, 'd')}
                             </span>
-                            {(booked || pending) && (
+                            {activeBooking && activeBooking.item_type === 'vehicle' && (
+                                <span className="text-[8px] font-bold leading-tight">
+                                    {getVehicleShortName(activeBooking.item_name)}
+                                </span>
+                            )}
+                            {activeBooking && activeBooking.item_type !== 'vehicle' && (
                                 <span className="absolute bottom-0.5">
-                                    {getItemIcon(booked?.item_type || pending?.item_type || '')}
+                                    {getItemIcon(activeBooking.item_type)}
                                 </span>
                             )}
                         </div>

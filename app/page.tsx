@@ -108,7 +108,26 @@ export default function HomePage() {
 
   const formatDateTime = (datetime: string) => {
     try {
-      // Handle different date formats
+      // Extract date parts from ISO string like "60202-02-20T09:00:00+00:00"
+      // If the year is malformed (more than 4 digits), try to extract correctly
+      const match = datetime.match(/(\d{4,})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/)
+      if (match) {
+        let year = match[1]
+        // Fix malformed year (e.g., 60202 should be 2026)
+        if (year.length > 4) {
+          // Take the last 4 characters as the year
+          year = year.slice(-4)
+        }
+        const month = parseInt(match[2])
+        const day = match[3]
+        const hour = match[4]
+        const minute = match[5]
+
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
+        return `${day} ${monthNames[month - 1]} ${year}, ${hour}:${minute}`
+      }
+
+      // Fallback to standard parsing
       const date = new Date(datetime)
       if (isNaN(date.getTime())) {
         return datetime

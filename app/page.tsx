@@ -63,14 +63,33 @@ export default function HomePage() {
         const bookings = bookingsData.bookings || []
         setRecentBookings(bookings.slice(0, 5)) // Get 5 most recent
 
-        // Transform for calendar
-        const dates: BookedDate[] = bookings.map((b: Booking) => ({
-          start: parseISO(b.start_datetime),
-          end: parseISO(b.end_datetime),
-          item_type: b.item_type,
-          item_name: b.item_name,
-          status: b.status,
-        }))
+        // Transform for calendar - fix malformed dates
+        const dates: BookedDate[] = bookings.map((b: Booking) => {
+          // Parse date handling malformed years like 60202 -> 2026
+          const parseDate = (dateStr: string): Date => {
+            const match = dateStr.match(/(\d{4,})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/)
+            if (match) {
+              let year = match[1]
+              if (year.length > 4) {
+                year = year.slice(-4)
+              }
+              const month = parseInt(match[2]) - 1 // JS months are 0-indexed
+              const day = parseInt(match[3])
+              const hour = parseInt(match[4])
+              const minute = parseInt(match[5])
+              return new Date(parseInt(year), month, day, hour, minute)
+            }
+            return new Date(dateStr)
+          }
+
+          return {
+            start: parseDate(b.start_datetime),
+            end: parseDate(b.end_datetime),
+            item_type: b.item_type,
+            item_name: b.item_name,
+            status: b.status,
+          }
+        })
         setBookedDates(dates)
       }
     } catch (error) {

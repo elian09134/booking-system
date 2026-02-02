@@ -51,8 +51,15 @@ export default function BookingCalendar({ bookedDates }: BookingCalendarProps) {
 
     const isDateBooked = (date: Date): BookedDate | null => {
         for (const booking of bookedDates) {
-            if (booking.status === 'approved' && isWithinInterval(date, { start: booking.start, end: booking.end })) {
-                return booking
+            if (booking.status === 'approved') {
+                // Check if date is same day as start or end, or between them
+                const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+                const startOnly = new Date(booking.start.getFullYear(), booking.start.getMonth(), booking.start.getDate())
+                const endOnly = new Date(booking.end.getFullYear(), booking.end.getMonth(), booking.end.getDate())
+
+                if (dateOnly >= startOnly && dateOnly <= endOnly) {
+                    return booking
+                }
             }
         }
         return null
@@ -60,8 +67,15 @@ export default function BookingCalendar({ bookedDates }: BookingCalendarProps) {
 
     const isDatePending = (date: Date): BookedDate | null => {
         for (const booking of bookedDates) {
-            if (booking.status === 'pending' && isWithinInterval(date, { start: booking.start, end: booking.end })) {
-                return booking
+            if (booking.status === 'pending') {
+                // Check if date is same day as start or end, or between them
+                const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+                const startOnly = new Date(booking.start.getFullYear(), booking.start.getMonth(), booking.start.getDate())
+                const endOnly = new Date(booking.end.getFullYear(), booking.end.getMonth(), booking.end.getDate())
+
+                if (dateOnly >= startOnly && dateOnly <= endOnly) {
+                    return booking
+                }
             }
         }
         return null

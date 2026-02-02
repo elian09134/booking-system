@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { FiChevronLeft, FiChevronRight, FiUsers, FiMapPin, FiTruck } from 'react-icons/fi'
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isWithinInterval, parseISO } from 'date-fns'
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isWithinInterval } from 'date-fns'
 import { id } from 'date-fns/locale'
 
 interface BookedDate {
@@ -18,7 +18,26 @@ interface BookingCalendarProps {
 }
 
 export default function BookingCalendar({ bookedDates }: BookingCalendarProps) {
-    const [currentMonth, setCurrentMonth] = useState(new Date())
+    const [currentMonth, setCurrentMonth] = useState<Date | null>(null)
+    const [today, setToday] = useState<Date | null>(null)
+
+    // Initialize dates on client side only to prevent hydration mismatch
+    useEffect(() => {
+        const now = new Date()
+        setCurrentMonth(now)
+        setToday(now)
+    }, [])
+
+    // Don't render until client-side hydration is complete
+    if (!currentMonth || !today) {
+        return (
+            <div className="glass-card p-4 sm:p-6">
+                <div className="h-80 flex items-center justify-center">
+                    <div className="spinner"></div>
+                </div>
+            </div>
+        )
+    }
 
     const monthStart = startOfMonth(currentMonth)
     const monthEnd = endOfMonth(currentMonth)
@@ -117,13 +136,13 @@ export default function BookingCalendar({ bookedDates }: BookingCalendarProps) {
                 {days.map((day) => {
                     const booked = isDateBooked(day)
                     const pending = isDatePending(day)
-                    const isToday = isSameDay(day, new Date())
+                    const isCurrentDay = isSameDay(day, today)
 
                     return (
                         <div
                             key={day.toString()}
                             className={`aspect-square p-1 rounded-lg flex flex-col items-center justify-center relative
-                ${isToday ? 'ring-2 ring-blue-500' : ''}
+                ${isCurrentDay ? 'ring-2 ring-blue-500' : ''}
                 ${booked ? getBookingColor(booked.item_type) + ' text-white' : ''}
                 ${pending && !booked ? 'bg-amber-100 dark:bg-amber-900/30' : ''}
                 ${!booked && !pending ? 'hover:bg-gray-100 dark:hover:bg-gray-700' : ''}

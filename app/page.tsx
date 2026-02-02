@@ -163,35 +163,11 @@ export default function HomePage() {
 
   const bookingOptions = [
     {
-      id: 'meeting-room',
-      title: 'Ruang Meeting',
-      description: 'Ruang Meeting Lantai 1',
-      icon: <FiUsers className="w-8 h-8" />,
-      gradient: 'from-blue-500 to-cyan-500',
-      href: '/booking/meeting-room',
-    },
-    {
-      id: 'glass-room',
-      title: 'Ruang Kaca',
-      description: 'Ruang Kaca Lantai 1',
-      icon: <FiSquare className="w-8 h-8" />,
-      gradient: 'from-teal-500 to-emerald-500',
-      href: '/booking/glass-room',
-    },
-    {
-      id: 'training-center',
-      title: 'Training Center',
-      description: 'Bandara Mas',
-      icon: <FiMapPin className="w-8 h-8" />,
-      gradient: 'from-purple-500 to-pink-500',
-      href: '/booking/training-center',
-    },
-    {
       id: 'vehicle',
-      title: 'Kendaraan',
+      title: 'Booking Kendaraan',
       description: 'Xpander, Xenia, Livina, Avanza, Voxy',
       icon: <FiTruck className="w-8 h-8" />,
-      gradient: 'from-orange-500 to-red-500',
+      gradient: 'from-blue-600 to-indigo-600',
       href: '/booking/vehicle',
     },
   ]

@@ -44,7 +44,7 @@ export default function MeetingRoomBookingPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     item_type: 'meeting_room',
-                    item_name: 'Ruang Meeting Lantai 1',
+                    item_name: 'Ruang Meeting Utama',
                     requester_name: formData.requester_name,
                     division: formData.division,
                     purpose: formData.purpose,
@@ -110,7 +110,7 @@ export default function MeetingRoomBookingPage() {
                         </div>
                         <div>
                             <h1 className="text-2xl font-bold">Ruang Meeting</h1>
-                            <p className="text-gray-500 dark:text-gray-400">Ruang Meeting Lantai 1</p>
+                            <p className="text-gray-500 dark:text-gray-400">Ruang Meeting Utama</p>
                         </div>
                     </div>
 
@@ -153,8 +153,6 @@ export default function MeetingRoomBookingPage() {
                                     required
                                 />
                             </div>
-
-
 
                             {/* Purpose */}
                             <div>

@@ -44,7 +44,7 @@ export default function TrainingCenterBookingPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     item_type: 'training_center',
-                    item_name: 'Bandara Mas',
+                    item_name: 'Training Center',
                     requester_name: formData.requester_name,
                     division: formData.division,
                     purpose: formData.purpose,
@@ -110,7 +110,7 @@ export default function TrainingCenterBookingPage() {
                         </div>
                         <div>
                             <h1 className="text-2xl font-bold">Training Center</h1>
-                            <p className="text-gray-500 dark:text-gray-400">Bandara Mas</p>
+                            <p className="text-gray-500 dark:text-gray-400">Ruang Training Kapasitas Besar</p>
                         </div>
                     </div>
 

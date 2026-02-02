@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { FiChevronLeft, FiChevronRight, FiUsers, FiMapPin, FiTruck, FiSquare } from 'react-icons/fi'
+import { FiChevronLeft, FiChevronRight, FiTruck } from 'react-icons/fi'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths } from 'date-fns'
 import { id } from 'date-fns/locale'
 
@@ -83,29 +83,17 @@ export default function BookingCalendar({ bookedDates }: BookingCalendarProps) {
 
     const getItemIcon = (itemType: string) => {
         switch (itemType) {
-            case 'meeting_room':
-                return <FiUsers className="w-3 h-3" />
-            case 'glass_room':
-                return <FiSquare className="w-3 h-3" />
-            case 'training_center':
-                return <FiMapPin className="w-3 h-3" />
             case 'vehicle':
                 return <FiTruck className="w-3 h-3" />
             default:
-                return null
+                return <FiTruck className="w-3 h-3" />
         }
     }
 
     const getBookingColor = (itemType: string) => {
         switch (itemType) {
-            case 'meeting_room':
-                return 'bg-blue-500'
-            case 'glass_room':
-                return 'bg-teal-500'
-            case 'training_center':
-                return 'bg-purple-500'
             case 'vehicle':
-                return 'bg-orange-500'
+                return 'bg-blue-600'
             default:
                 return 'bg-gray-500'
         }
@@ -201,19 +189,7 @@ export default function BookingCalendar({ bookedDates }: BookingCalendarProps) {
             <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex flex-wrap gap-3 text-xs">
                     <div className="flex items-center gap-1.5">
-                        <div className="w-3 h-3 rounded bg-blue-500"></div>
-                        <span>Meeting</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                        <div className="w-3 h-3 rounded bg-teal-500"></div>
-                        <span>R. Kaca</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                        <div className="w-3 h-3 rounded bg-purple-500"></div>
-                        <span>Training</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                        <div className="w-3 h-3 rounded bg-orange-500"></div>
+                        <div className="w-3 h-3 rounded bg-blue-600"></div>
                         <span>Kendaraan</span>
                     </div>
                     <div className="flex items-center gap-1.5">

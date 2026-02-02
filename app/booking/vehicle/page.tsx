@@ -1,24 +1,44 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { FiArrowLeft, FiTruck, FiCalendar, FiClock, FiCheck, FiAlertCircle, FiNavigation } from 'react-icons/fi'
 import Navbar from '@/components/Navbar'
 
-const vehicles = [
-    { id: 'xpander', name: 'Xpander', type: 'MPV' },
-    { id: 'xenia', name: 'Xenia', type: 'MPV' },
-    { id: 'livina', name: 'Livina', type: 'MPV' },
-    { id: 'avanza', name: 'Avanza', type: 'MPV' },
-    { id: 'voxy', name: 'Voxy', type: 'MPV' },
-]
+interface Vehicle {
+    id: string
+    name: string
+    type: string
+    brand?: string
+    year?: number
+}
 
 export default function VehicleBookingPage() {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     const [error, setError] = useState('')
+    const [vehicles, setVehicles] = useState<Vehicle[]>([])
+    const [loadingVehicles, setLoadingVehicles] = useState(true)
+
+    useEffect(() => {
+        fetchVehicles()
+    }, [])
+
+    const fetchVehicles = async () => {
+        try {
+            const res = await fetch('/api/vehicles')
+            if (res.ok) {
+                const data = await res.json()
+                setVehicles(data.vehicles || [])
+            }
+        } catch (error) {
+            console.error('Error fetching vehicles:', error)
+        } finally {
+            setLoadingVehicles(false)
+        }
+    }
 
     const [formData, setFormData] = useState({
         requester_name: '',
@@ -49,12 +69,17 @@ export default function VehicleBookingPage() {
             const startDatetime = `${formData.start_date}T${formData.start_time}:00`
             const endDatetime = `${formData.end_date}T${formData.end_time}:00`
 
+            // Find selected vehicle to get name and ID
+            const selectedVehicle = vehicles.find(v => v.id === formData.vehicle)
+            if (!selectedVehicle) throw new Error('Kendaraan tidak valid')
+
             const response = await fetch('/api/bookings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     item_type: 'vehicle',
-                    item_name: formData.vehicle,
+                    item_name: selectedVehicle.name,
+                    vehicle_id: selectedVehicle.id,
                     requester_name: formData.requester_name,
                     division: formData.division,
                     purpose: formData.purpose,
@@ -121,7 +146,7 @@ export default function VehicleBookingPage() {
                         </div>
                         <div>
                             <h1 className="text-2xl font-bold">Kendaraan Operasional</h1>
-                            <p className="text-gray-500 dark:text-gray-400">Xpander, Xenia, Livina, Avanza, Voxy</p>
+                            <p className="text-gray-500 dark:text-gray-400">Booking kendaraan untuk keperluan dinas</p>
                         </div>
                     </div>
 
@@ -146,11 +171,12 @@ export default function VehicleBookingPage() {
                                     onChange={handleChange}
                                     className="input-field"
                                     required
+                                    disabled={loadingVehicles}
                                 >
-                                    <option value="">-- Pilih Kendaraan --</option>
+                                    <option value="">{loadingVehicles ? 'Memuat data...' : '-- Pilih Kendaraan --'}</option>
                                     {vehicles.map((vehicle) => (
-                                        <option key={vehicle.id} value={vehicle.name}>
-                                            {vehicle.name} ({vehicle.type})
+                                        <option key={vehicle.id} value={vehicle.id}>
+                                            {vehicle.brand} {vehicle.name} {vehicle.year ? `(${vehicle.year})` : ''} - {vehicle.type}
                                         </option>
                                     ))}
                                 </select>

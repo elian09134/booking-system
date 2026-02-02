@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
         const {
             item_type,
             item_name,
+            vehicle_id, // Add vehicle_id
             requester_name,
             division,
             purpose,
@@ -81,6 +82,7 @@ export async function POST(request: NextRequest) {
             .insert({
                 item_type,
                 item_name,
+                vehicle_id: vehicle_id || null, // Insert vehicle_id
                 requester_name,
                 division,
                 purpose,

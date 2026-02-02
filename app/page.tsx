@@ -161,7 +161,7 @@ export default function HomePage() {
     {
       id: 'meeting-room',
       title: 'Ruang Meeting',
-      description: 'Ruang Meeting Lantai 1',
+      description: 'Ruang Meeting & Ruang Kaca Lt.1',
       icon: <FiUsers className="w-8 h-8" />,
       gradient: 'from-blue-500 to-cyan-500',
       href: '/booking/meeting-room',

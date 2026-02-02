@@ -15,6 +15,7 @@ export default function MeetingRoomBookingPage() {
     const [formData, setFormData] = useState({
         requester_name: '',
         division: '',
+        room_name: 'Ruang Meeting Lantai 1',
         purpose: '',
         start_date: '',
         start_time: '',
@@ -44,7 +45,7 @@ export default function MeetingRoomBookingPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     item_type: 'meeting_room',
-                    item_name: 'Ruang Meeting Lantai 1',
+                    item_name: formData.room_name,
                     requester_name: formData.requester_name,
                     division: formData.division,
                     purpose: formData.purpose,
@@ -152,6 +153,21 @@ export default function MeetingRoomBookingPage() {
                                     placeholder="Masukkan nama divisi"
                                     required
                                 />
+                            </div>
+
+                            {/* Room Selection */}
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Pilih Ruangan *</label>
+                                <select
+                                    name="room_name"
+                                    value={formData.room_name}
+                                    onChange={handleChange}
+                                    className="input-field"
+                                    required
+                                >
+                                    <option value="Ruang Meeting Lantai 1">Ruang Meeting Lantai 1</option>
+                                    <option value="Ruang Kaca Lantai 1">Ruang Kaca Lantai 1</option>
+                                </select>
                             </div>
 
                             {/* Purpose */}

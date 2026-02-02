@@ -108,7 +108,12 @@ export default function HomePage() {
 
   const formatDateTime = (datetime: string) => {
     try {
-      return format(parseISO(datetime), 'dd MMM, HH:mm', { locale: id })
+      // Handle different date formats
+      const date = new Date(datetime)
+      if (isNaN(date.getTime())) {
+        return datetime
+      }
+      return format(date, 'dd MMM yyyy, HH:mm', { locale: id })
     } catch {
       return datetime
     }

@@ -1,6 +1,6 @@
 
 import { NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase-admin'
+import { supabaseAdmin, isServiceKeySet } from '@/lib/supabase-admin'
 
 export async function GET(
     request: Request,
@@ -42,6 +42,13 @@ export async function POST(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        if (!isServiceKeySet) {
+            return NextResponse.json(
+                { error: 'Server misconfiguration: SUPABASE_SERVICE_ROLE_KEY is missing. Cannot write to database.' },
+                { status: 500 }
+            )
+        }
+
         const { id } = await params
         const body = await request.json()
         const { service_date, service_type, description, cost, odometer_reading } = body

@@ -179,8 +179,8 @@ export default function VehicleManagementPage() {
                                         <p className="text-sm text-gray-500 font-mono">{vehicle.plate_number}</p>
                                     </div>
                                 </div>
-                                <div className={`px-2.5 py-1 rounded-full text-xs font-semibold ${vehicle.is_active ? 'bg-green-50 text-green-600 border border-green-100' : 'bg-red-50 text-red-600 border border-red-100'}`}>
-                                    {vehicle.is_active ? 'Active' : 'Inactive'}
+                                <div className={`px-2.5 py-1 rounded-full text-xs font-semibold ${vehicle.is_active ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-red-50 text-red-600 border border-red-100'}`}>
+                                    {vehicle.is_active ? 'Available' : 'Maintenance'}
                                 </div>
                             </div>
 
@@ -205,8 +205,8 @@ export default function VehicleManagementPage() {
                                 </button>
                                 <button
                                     onClick={() => handleToggleStatus(vehicle)}
-                                    className="p-2 rounded-lg text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
-                                    title={vehicle.is_active ? 'Deactivate' : 'Activate'}
+                                    className={`p-2 rounded-lg transition-colors ${vehicle.is_active ? 'text-gray-400 hover:text-red-600 hover:bg-red-50' : 'text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50'}`}
+                                    title={vehicle.is_active ? 'Set to Maintenance' : 'Set to Available'}
                                 >
                                     <FiTool className="w-4 h-4" />
                                 </button>

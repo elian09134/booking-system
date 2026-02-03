@@ -62,16 +62,26 @@ export async function POST(request: NextRequest) {
         }
 
         // Check for conflicts (only for approved bookings)
-        const { data: conflicts } = await supabase
+        // Using vehicle_id if available, otherwise fallback to item_name
+        let conflictQuery = supabase
             .from('bookings')
             .select('*')
-            .eq('item_name', item_name)
-            .eq('status', 'approved')
-            .or(`and(start_datetime.lte.${end_datetime},end_datetime.gte.${start_datetime})`)
+            .eq('status', 'approved') // Only block confirmed bookings
+            // Overlap logic: (StartA <= EndB) and (EndA >= StartB)
+            .lte('start_datetime', end_datetime)
+            .gte('end_datetime', start_datetime)
+
+        if (vehicle_id) {
+            conflictQuery = conflictQuery.eq('vehicle_id', vehicle_id)
+        } else {
+            conflictQuery = conflictQuery.eq('item_name', item_name)
+        }
+
+        const { data: conflicts } = await conflictQuery
 
         if (conflicts && conflicts.length > 0) {
             return NextResponse.json({
-                error: 'Item sudah dibooking pada waktu tersebut. Silakan pilih waktu lain.',
+                error: 'Kendaraan sudah dibooking (Approved) pada tanggal tersebut. Silakan pilih waktu atau kendaraan lain.',
                 conflicts
             }, { status: 409 })
         }

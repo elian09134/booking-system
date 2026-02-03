@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { FiPlus, FiEdit2, FiTrash2, FiTruck, FiTool, FiLogOut, FiMenu } from 'react-icons/fi'
+import { FiPlus, FiEdit2, FiTrash2, FiTruck, FiTool, FiLogOut, FiMenu, FiMoreVertical } from 'react-icons/fi'
 import AdminSidebar from '@/components/AdminSidebar'
 
 interface Vehicle {
@@ -139,26 +139,26 @@ export default function VehicleManagementPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-900">
-                <div className="spinner"></div>
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="spinner w-8 h-8 border-indigo-600 border-t-transparent"></div>
             </div>
         )
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+        <div className="min-h-screen bg-gray-50">
             <AdminSidebar />
 
             <main className="lg:ml-64 p-6 lg:p-8">
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                     <div>
-                        <h1 className="text-3xl font-bold mb-2">Aset Kendaraan</h1>
-                        <p className="text-gray-400">Kelola daftar kendaraan operasional</p>
+                        <h1 className="text-2xl font-bold text-gray-900 mb-1">Aset Kendaraan</h1>
+                        <p className="text-gray-500 text-sm">Kelola daftar kendaraan operasional</p>
                     </div>
                     <button
                         onClick={() => handleOpenModal()}
-                        className="btn btn-primary"
+                        className="btn btn-primary shadow-lg shadow-indigo-200 hover:shadow-indigo-300"
                     >
                         <FiPlus className="w-5 h-5" />
                         Tambah Kendaraan
@@ -168,55 +168,61 @@ export default function VehicleManagementPage() {
                 {/* Vehicles Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {vehicles.map((vehicle) => (
-                        <div key={vehicle.id} className="glass-card p-6 border border-white/10 bg-white/5 relative group">
+                        <div key={vehicle.id} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all group">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="flex items-center gap-3">
-                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white ${vehicle.is_active ? 'bg-blue-600' : 'bg-gray-600'}`}>
+                                <div className="flex items-center gap-4">
+                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-sm ${vehicle.is_active ? 'bg-indigo-600' : 'bg-gray-400'}`}>
                                         <FiTruck className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-lg">{vehicle.brand} {vehicle.name}</h3>
-                                        <p className="text-sm text-gray-400">{vehicle.plate_number}</p>
+                                        <h3 className="font-bold text-lg text-gray-900">{vehicle.brand} {vehicle.name}</h3>
+                                        <p className="text-sm text-gray-500 font-mono">{vehicle.plate_number}</p>
                                     </div>
                                 </div>
-                                <div className={`px-2 py-1 rounded text-xs font-bold ${vehicle.is_active ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                                    {vehicle.is_active ? 'Active' : 'Non-Active'}
+                                <div className={`px-2.5 py-1 rounded-full text-xs font-semibold ${vehicle.is_active ? 'bg-green-50 text-green-600 border border-green-100' : 'bg-red-50 text-red-600 border border-red-100'}`}>
+                                    {vehicle.is_active ? 'Active' : 'Inactive'}
                                 </div>
                             </div>
 
-                            <div className="text-sm text-gray-400 mb-6 space-y-1">
-                                <p>Tipe: {vehicle.type}</p>
-                                <p>Tahun: {vehicle.year}</p>
+                            <div className="text-sm text-gray-600 mb-6 space-y-1 bg-gray-50 p-3 rounded-lg">
+                                <div className="flex justify-between">
+                                    <span className="text-gray-400">Tipe</span>
+                                    <span className="font-medium">{vehicle.type}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-gray-400">Tahun</span>
+                                    <span className="font-medium">{vehicle.year}</span>
+                                </div>
                             </div>
 
-                            <div className="flex gap-2 mt-auto">
+                            <div className="flex gap-2 pt-4 border-t border-gray-100">
                                 <button
                                     onClick={() => handleOpenModal(vehicle)}
-                                    className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-blue-400 transition-colors"
+                                    className="p-2 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
                                     title="Edit"
                                 >
                                     <FiEdit2 className="w-4 h-4" />
                                 </button>
                                 <button
-                                    onClick={() => handleDelete(vehicle.id)}
-                                    className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-red-400 transition-colors"
-                                    title="Delete"
-                                >
-                                    <FiTrash2 className="w-4 h-4" />
-                                </button>
-                                <button
                                     onClick={() => handleToggleStatus(vehicle)}
-                                    className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-yellow-400 transition-colors"
+                                    className="p-2 rounded-lg text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
                                     title={vehicle.is_active ? 'Deactivate' : 'Activate'}
                                 >
                                     <FiTool className="w-4 h-4" />
                                 </button>
+                                <button
+                                    onClick={() => handleDelete(vehicle.id)}
+                                    className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                                    title="Delete"
+                                >
+                                    <FiTrash2 className="w-4 h-4" />
+                                </button>
                                 <Link
                                     href={`/admin/vehicles/${vehicle.id}/services`}
-                                    className="ml-auto px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors flex items-center gap-2"
+                                    className="ml-auto px-4 py-2 rounded-lg bg-gray-50 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 text-sm font-medium transition-colors flex items-center gap-2 border border-gray-200 hover:border-indigo-200"
                                 >
-                                    <FiTool className="w-4 h-4" />
-                                    Service History
+                                    <FiTool className="w-3.5 h-3.5" />
+                                    Service Log
                                 </Link>
                             </div>
                         </div>
@@ -225,17 +231,17 @@ export default function VehicleManagementPage() {
 
                 {/* Modal */}
                 {isModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                        <div className="bg-slate-800 rounded-2xl w-full max-w-md p-6 border border-white/10 shadow-xl">
-                            <h2 className="text-xl font-bold mb-6">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                        <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl scale-100 transform transition-all">
+                            <h2 className="text-xl font-bold mb-6 text-gray-900">
                                 {editingVehicle ? 'Edit Kendaraan' : 'Tambah Kendaraan Baru'}
                             </h2>
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-400 mb-1">Merek</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Merek</label>
                                     <input
                                         type="text"
-                                        className="input-field bg-slate-900 border-slate-700 text-white"
+                                        className="input-field w-full"
                                         value={formData.brand}
                                         onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
                                         placeholder="Toyota, Honda, dll"
@@ -243,10 +249,10 @@ export default function VehicleManagementPage() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-400 mb-1">Nama / Model</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Nama / Model</label>
                                     <input
                                         type="text"
-                                        className="input-field bg-slate-900 border-slate-700 text-white"
+                                        className="input-field w-full"
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         placeholder="Avanza, Innova, dll"
@@ -255,10 +261,10 @@ export default function VehicleManagementPage() {
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-400 mb-1">Plat Nomor</label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Plat Nomor</label>
                                         <input
                                             type="text"
-                                            className="input-field bg-slate-900 border-slate-700 text-white"
+                                            className="input-field w-full"
                                             value={formData.plate_number}
                                             onChange={(e) => setFormData({ ...formData, plate_number: e.target.value })}
                                             placeholder="B 1234 ABC"
@@ -266,10 +272,10 @@ export default function VehicleManagementPage() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-400 mb-1">Tahun</label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Tahun</label>
                                         <input
                                             type="number"
-                                            className="input-field bg-slate-900 border-slate-700 text-white"
+                                            className="input-field w-full"
                                             value={formData.year}
                                             onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
                                             required
@@ -277,9 +283,9 @@ export default function VehicleManagementPage() {
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-400 mb-1">Tipe</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Tipe</label>
                                     <select
-                                        className="input-field bg-slate-900 border-slate-700 text-white"
+                                        className="input-field w-full"
                                         value={formData.type}
                                         onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                                     >
@@ -291,11 +297,11 @@ export default function VehicleManagementPage() {
                                     </select>
                                 </div>
 
-                                <div className="flex justify-end gap-3 mt-8">
+                                <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-gray-100">
                                     <button
                                         type="button"
                                         onClick={() => setIsModalOpen(false)}
-                                        className="px-4 py-2 rounded-xl text-gray-400 hover:bg-white/5 transition-colors"
+                                        className="px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
                                     >
                                         Batal
                                     </button>

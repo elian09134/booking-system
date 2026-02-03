@@ -106,36 +106,36 @@ export default function ServiceHistoryPage({ params }: { params: Promise<{ id: s
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-900">
-                <div className="spinner"></div>
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="spinner w-8 h-8 border-indigo-600 border-t-transparent"></div>
             </div>
         )
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+        <div className="min-h-screen bg-gray-50">
             <AdminSidebar />
 
             <main className="lg:ml-64 p-6 lg:p-8">
                 {/* Header */}
                 <div className="mb-8">
-                    <Link href="/admin/vehicles" className="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-4 transition-colors">
+                    <Link href="/admin/vehicles" className="inline-flex items-center gap-2 text-gray-500 hover:text-indigo-600 mb-4 transition-colors">
                         <FiArrowLeft className="w-4 h-4" />
                         <span>Kembali ke Daftar Kendaraan</span>
                     </Link>
 
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-3xl font-bold mb-2">Riwayat Service</h1>
+                            <h1 className="text-2xl font-bold text-gray-900 mb-1">Riwayat Service</h1>
                             {vehicle && (
-                                <p className="text-xl text-blue-400">
-                                    {vehicle.brand} {vehicle.name} <span className="text-gray-500">•</span> {vehicle.plate_number}
+                                <p className="text-lg text-indigo-600 font-medium">
+                                    {vehicle.brand} {vehicle.name} <span className="text-gray-400">•</span> {vehicle.plate_number}
                                 </p>
                             )}
                         </div>
                         <button
                             onClick={() => setIsModalOpen(true)}
-                            className="btn btn-primary"
+                            className="btn btn-primary shadow-lg shadow-indigo-200 hover:shadow-indigo-300"
                         >
                             <FiPlus className="w-5 h-5" />
                             Catat Service Baru
@@ -146,36 +146,36 @@ export default function ServiceHistoryPage({ params }: { params: Promise<{ id: s
                 {/* Service Logs List */}
                 <div className="space-y-4">
                     {services.length === 0 ? (
-                        <div className="glass-card p-12 text-center bg-white/5">
-                            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
-                                <FiTool className="w-8 h-8 text-gray-500" />
+                        <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
+                            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-50 flex items-center justify-center">
+                                <FiTool className="w-8 h-8 text-gray-400" />
                             </div>
-                            <p className="text-gray-400">Belum ada riwayat service untuk kendaraan ini</p>
+                            <p className="text-gray-500">Belum ada riwayat service untuk kendaraan ini</p>
                         </div>
                     ) : (
                         services.map((log) => (
-                            <div key={log.id} className="glass-card p-6 border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+                            <div key={log.id} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all">
                                 <div className="flex flex-col md:flex-row gap-6">
                                     <div className="flex-shrink-0">
-                                        <div className="w-16 h-16 rounded-2xl bg-blue-500/20 flex flex-col items-center justify-center text-blue-400 border border-blue-500/30">
-                                            <span className="text-xs font-bold uppercase">{format(new Date(log.service_date), 'MMM', { locale: idLocale })}</span>
+                                        <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex flex-col items-center justify-center text-indigo-600 border border-indigo-100">
+                                            <span className="text-xs font-bold uppercase text-indigo-400">{format(new Date(log.service_date), 'MMM', { locale: idLocale })}</span>
                                             <span className="text-2xl font-bold">{format(new Date(log.service_date), 'd')}</span>
-                                            <span className="text-xs">{format(new Date(log.service_date), 'yyyy')}</span>
+                                            <span className="text-xs text-indigo-400">{format(new Date(log.service_date), 'yyyy')}</span>
                                         </div>
                                     </div>
 
                                     <div className="flex-grow">
                                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2">
-                                            <h3 className="text-lg font-bold text-white mb-1 sm:mb-0">{log.service_type}</h3>
-                                            <span className="text-emerald-400 font-bold font-mono text-lg">
+                                            <h3 className="text-lg font-bold text-gray-900 mb-1 sm:mb-0">{log.service_type}</h3>
+                                            <span className="text-emerald-600 font-bold font-mono text-lg bg-emerald-50 px-3 py-1 rounded-lg">
                                                 {formatCurrency(log.cost)}
                                             </span>
                                         </div>
-                                        <p className="text-gray-300 mb-4">{log.description}</p>
+                                        <p className="text-gray-600 mb-4 text-sm leading-relaxed">{log.description}</p>
 
-                                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                                        <div className="flex items-center gap-4 text-sm text-gray-500 pt-4 border-t border-gray-50">
                                             <div className="flex items-center gap-2">
-                                                <FiActivity className="w-4 h-4" />
+                                                <FiActivity className="w-4 h-4 text-gray-400" />
                                                 <span>KM {log.odometer_reading.toLocaleString('id-ID')}</span>
                                             </div>
                                         </div>
@@ -188,15 +188,15 @@ export default function ServiceHistoryPage({ params }: { params: Promise<{ id: s
 
                 {/* Add Service Modal */}
                 {isModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                        <div className="bg-slate-800 rounded-2xl w-full max-w-md p-6 border border-white/10 shadow-xl">
-                            <h2 className="text-xl font-bold mb-6">Catat Service Baru</h2>
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                        <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl scale-100 transform transition-all">
+                            <h2 className="text-xl font-bold mb-6 text-gray-900">Catat Service Baru</h2>
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-400 mb-1">Tanggal Service</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal Service</label>
                                     <input
                                         type="date"
-                                        className="input-field bg-slate-900 border-slate-700 text-white"
+                                        className="input-field w-full"
                                         value={formData.service_date}
                                         onChange={(e) => setFormData({ ...formData, service_date: e.target.value })}
                                         required
@@ -204,9 +204,9 @@ export default function ServiceHistoryPage({ params }: { params: Promise<{ id: s
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-400 mb-1">Jenis Service</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Jenis Service</label>
                                     <select
-                                        className="input-field bg-slate-900 border-slate-700 text-white"
+                                        className="input-field w-full"
                                         value={formData.service_type}
                                         onChange={(e) => setFormData({ ...formData, service_type: e.target.value })}
                                     >
@@ -220,9 +220,9 @@ export default function ServiceHistoryPage({ params }: { params: Promise<{ id: s
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-400 mb-1">Keterangan</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Keterangan</label>
                                     <textarea
-                                        className="input-field bg-slate-900 border-slate-700 text-white min-h-[100px]"
+                                        className="input-field w-full min-h-[100px]"
                                         value={formData.description}
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                         placeholder="Detail pengerjaan service..."
@@ -232,10 +232,10 @@ export default function ServiceHistoryPage({ params }: { params: Promise<{ id: s
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-400 mb-1">Biaya (Rp)</label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Biaya (Rp)</label>
                                         <input
                                             type="number"
-                                            className="input-field bg-slate-900 border-slate-700 text-white"
+                                            className="input-field w-full"
                                             value={formData.cost}
                                             onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
                                             placeholder="0"
@@ -243,10 +243,10 @@ export default function ServiceHistoryPage({ params }: { params: Promise<{ id: s
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-400 mb-1">Odometer (KM)</label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Odometer (KM)</label>
                                         <input
                                             type="number"
-                                            className="input-field bg-slate-900 border-slate-700 text-white"
+                                            className="input-field w-full"
                                             value={formData.odometer_reading}
                                             onChange={(e) => setFormData({ ...formData, odometer_reading: e.target.value })}
                                             placeholder="0"
@@ -255,11 +255,11 @@ export default function ServiceHistoryPage({ params }: { params: Promise<{ id: s
                                     </div>
                                 </div>
 
-                                <div className="flex justify-end gap-3 mt-8">
+                                <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-gray-100">
                                     <button
                                         type="button"
                                         onClick={() => setIsModalOpen(false)}
-                                        className="px-4 py-2 rounded-xl text-gray-400 hover:bg-white/5 transition-colors"
+                                        className="px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
                                     >
                                         Batal
                                     </button>

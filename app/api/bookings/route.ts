@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
         const status = searchParams.get('status')
         const item_type = searchParams.get('item_type')
         const requester_name = searchParams.get('requester_name')
+        const vehicle_id = searchParams.get('vehicle_id')
 
         let query = supabase
             .from('bookings')
@@ -19,6 +20,9 @@ export async function GET(request: NextRequest) {
         }
         if (item_type) {
             query = query.eq('item_type', item_type)
+        }
+        if (vehicle_id) {
+            query = query.eq('vehicle_id', vehicle_id)
         }
         if (requester_name) {
             query = query.ilike('requester_name', `%${requester_name}%`)

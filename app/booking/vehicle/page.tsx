@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { FiArrowLeft, FiTruck, FiCalendar, FiClock, FiCheck, FiAlertCircle, FiNavigation, FiUser, FiBriefcase, FiMapPin } from 'react-icons/fi'
 import Navbar from '@/components/Navbar'
+import BookingCalendar from '@/components/BookingCalendar'
 
 interface Vehicle {
     id: string
@@ -15,6 +16,16 @@ interface Vehicle {
     plate_number?: string
 }
 
+interface BookedDate {
+    start: Date
+    end: Date
+    item_type: string
+    item_name: string
+    status: string
+    requester_name: string
+    purpose: string
+}
+
 export default function VehicleBookingPage() {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
@@ -22,6 +33,8 @@ export default function VehicleBookingPage() {
     const [error, setError] = useState('')
     const [vehicles, setVehicles] = useState<Vehicle[]>([])
     const [loadingVehicles, setLoadingVehicles] = useState(true)
+    const [vehicleBookings, setVehicleBookings] = useState<BookedDate[]>([])
+    const [loadingCalendar, setLoadingCalendar] = useState(false)
 
     // Form State
     const [formData, setFormData] = useState({
@@ -41,6 +54,14 @@ export default function VehicleBookingPage() {
         fetchVehicles()
     }, [])
 
+    useEffect(() => {
+        if (formData.vehicle) {
+            fetchVehicleBookings(formData.vehicle)
+        } else {
+            setVehicleBookings([])
+        }
+    }, [formData.vehicle])
+
     const fetchVehicles = async () => {
         try {
             const res = await fetch('/api/vehicles')
@@ -52,6 +73,48 @@ export default function VehicleBookingPage() {
             console.error('Error fetching vehicles:', error)
         } finally {
             setLoadingVehicles(false)
+        }
+    }
+
+    const fetchVehicleBookings = async (vehicleId: string) => {
+        setLoadingCalendar(true)
+        try {
+            // Fetch APPROVED bookings for this vehicle
+            const res = await fetch(`/api/bookings?vehicle_id=${vehicleId}&status=approved`)
+            if (res.ok) {
+                const data = await res.json()
+                const bookings = data.bookings || []
+                
+                const dates: BookedDate[] = bookings.map((b: any) => {
+                    const parseDate = (dateStr: string): Date => {
+                        const match = dateStr.match(/(\d{4,})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/)
+                        if (match) {
+                            let year = match[1]
+                            if (year.length > 4) year = year.slice(-4)
+                            const month = parseInt(match[2]) - 1
+                            const day = parseInt(match[3])
+                            const hour = parseInt(match[4])
+                            const minute = parseInt(match[5])
+                            return new Date(parseInt(year), month, day, hour, minute)
+                        }
+                        return new Date(dateStr)
+                    }
+                    return {
+                        start: parseDate(b.start_datetime),
+                        end: parseDate(b.end_datetime),
+                        item_type: b.item_type,
+                        item_name: b.item_name,
+                        status: b.status,
+                        requester_name: b.requester_name,
+                        purpose: b.purpose
+                    }
+                })
+                setVehicleBookings(dates)
+            }
+        } catch (error) {
+            console.error('Error fetching calendar:', error)
+        } finally {
+            setLoadingCalendar(false)
         }
     }
 
@@ -218,6 +281,19 @@ export default function VehicleBookingPage() {
                                     <FiCalendar className="text-indigo-600" />
                                     2. Waktu Peminjaman
                                 </h2>
+
+                                {formData.vehicle && (
+                                    <div className="mb-6 border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
+                                        <div className="bg-gray-50 px-4 py-2 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wide flex justify-between items-center">
+                                            <span>Ketersediaan Unit</span>
+                                            {loadingCalendar && <div className="spinner w-3 h-3 border-indigo-500 border-t-transparent"></div>}
+                                        </div>
+                                        <div className="p-2">
+                                            <BookingCalendar bookedDates={vehicleBookings} />
+                                        </div>
+                                    </div>
+                                )}
+
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-4">
                                         <label className="text-sm font-medium text-gray-500 uppercase tracking-wider">Mulai</label>

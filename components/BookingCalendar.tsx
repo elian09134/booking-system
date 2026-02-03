@@ -145,40 +145,26 @@ export default function BookingCalendar({ bookedDates }: BookingCalendarProps) {
                     const isCurrentDay = isSameDay(day, today)
                     const activeBooking = booked || pending
 
-                    // Get short vehicle name for display
-                    const getVehicleShortName = (itemName: string) => {
-                        const name = itemName.toLowerCase()
-                        if (name.includes('xpander')) return 'XP'
-                        if (name.includes('xenia')) return 'XN'
-                        if (name.includes('livina')) return 'LV'
-                        if (name.includes('avanza')) return 'AV'
-                        if (name.includes('voxy')) return 'VX'
-                        return itemName.substring(0, 2).toUpperCase()
-                    }
-
                     return (
                         <div
                             key={day.toString()}
-                            className={`aspect-square p-0.5 rounded-lg flex flex-col items-center justify-center relative
-                ${isCurrentDay ? 'ring-2 ring-blue-500' : ''}
-                ${booked ? getBookingColor(booked.item_type) + ' text-white' : ''}
-                ${pending && !booked ? 'bg-amber-100 dark:bg-amber-900/30' : ''}
-                ${!booked && !pending ? 'hover:bg-gray-100 dark:hover:bg-gray-700' : ''}
+                            className={`min-h-[100px] p-2 rounded-lg flex flex-col items-start justify-start relative transition-all border border-transparent
+                ${isCurrentDay ? 'ring-2 ring-indigo-500 z-10' : ''}
+                ${booked ? getBookingColor(booked.item_type) + ' text-white shadow-sm' : ''}
+                ${pending && !booked ? 'bg-amber-50 text-amber-900 border-amber-200' : ''}
+                ${!booked && !pending ? 'bg-white hover:bg-gray-50 border-gray-100' : ''}
               `}
                             title={activeBooking ? `${activeBooking.item_name} (${activeBooking.status === 'approved' ? 'Approved' : 'Pending'})` : ''}
                         >
-                            <span className={`text-sm ${booked ? 'font-bold' : ''}`}>
+                            <span className={`text-sm mb-1 ${booked ? 'font-bold opacity-80' : 'font-medium text-gray-500'}`}>
                                 {format(day, 'd')}
                             </span>
-                            {activeBooking && activeBooking.item_type === 'vehicle' && (
-                                <span className="text-[8px] font-bold leading-tight">
-                                    {getVehicleShortName(activeBooking.item_name)}
-                                </span>
-                            )}
-                            {activeBooking && activeBooking.item_type !== 'vehicle' && (
-                                <span className="absolute bottom-0.5">
-                                    {getItemIcon(activeBooking.item_type)}
-                                </span>
+                            {activeBooking && (
+                                <div className={`w-full text-xs font-medium leading-tight px-1.5 py-1 rounded truncate
+                                    ${booked ? 'bg-white/20' : 'bg-amber-100 text-amber-800'}
+                                `}>
+                                    {activeBooking.item_name}
+                                </div>
                             )}
                         </div>
                     )

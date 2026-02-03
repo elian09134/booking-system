@@ -54,8 +54,8 @@ export async function POST(
                     service_date,
                     service_type,
                     description,
-                    cost,
-                    odometer_reading
+                    cost: parseFloat(cost),
+                    odometer_reading: parseInt(odometer_reading)
                 }
             ])
             .select()
@@ -64,10 +64,10 @@ export async function POST(
         if (error) throw error
 
         return NextResponse.json({ service: data }, { status: 201 })
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error creating service log:', error)
         return NextResponse.json(
-            { error: 'Failed to create service log' },
+            { error: error.message || 'Failed to create service log' },
             { status: 500 }
         )
     }

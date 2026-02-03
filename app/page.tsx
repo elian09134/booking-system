@@ -101,29 +101,17 @@ export default function HomePage() {
 
   const getItemIcon = (itemType: string) => {
     switch (itemType) {
-      case 'meeting_room':
-        return <FiUsers className="w-4 h-4" />
-      case 'glass_room':
-        return <FiSquare className="w-4 h-4" />
-      case 'training_center':
-        return <FiMapPin className="w-4 h-4" />
       case 'vehicle':
         return <FiTruck className="w-4 h-4" />
       default:
-        return <FiCalendar className="w-4 h-4" />
+        return <FiTruck className="w-4 h-4" />
     }
   }
 
   const getItemGradient = (itemType: string) => {
     switch (itemType) {
-      case 'meeting_room':
-        return 'from-blue-500 to-cyan-500'
-      case 'glass_room':
-        return 'from-teal-500 to-emerald-500'
-      case 'training_center':
-        return 'from-purple-500 to-pink-500'
       case 'vehicle':
-        return 'from-orange-500 to-red-500'
+        return 'from-indigo-500 to-violet-500'
       default:
         return 'from-gray-500 to-gray-600'
     }
@@ -183,8 +171,7 @@ export default function HomePage() {
               <span className="gradient-text">Booking System</span>
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Reservasi ruang meeting, training center, dan kendaraan operasional
-              perusahaan dengan mudah dan cepat
+              Reservasi kendaraan operasional perusahaan dengan mudah dan cepat
             </p>
           </div>
 

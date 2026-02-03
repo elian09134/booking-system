@@ -8,7 +8,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 // Types
 export interface Booking {
   id: string
-  item_type: 'meeting_room' | 'training_center' | 'vehicle'
+  item_type: 'vehicle'
   item_name: string
   requester_name: string
   division: string
@@ -27,16 +27,6 @@ export interface Vehicle {
   name: string
   type: string
   plate_number: string
-  is_active: boolean
-  created_at: string
-}
-
-export interface Room {
-  id: string
-  name: string
-  type: 'meeting_room' | 'training_center'
-  location: string
-  capacity?: number
   is_active: boolean
   created_at: string
 }

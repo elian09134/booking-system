@@ -34,7 +34,7 @@ export default function Navbar() {
                             <span>Beranda</span>
                         </Link>
                         <Link
-                            href="/booking"
+                            href="/booking/vehicle"
                             className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${pathname.startsWith('/booking')
                                     ? 'bg-indigo-500/10 text-indigo-600 font-semibold'
                                     : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600'
@@ -77,8 +77,8 @@ export default function Navbar() {
                     <span className="text-xs">Beranda</span>
                 </Link>
                 <Link
-                    href="/booking"
-                    className={`flex flex-col items-center gap-1 px-4 py-1 ${pathname.startsWith('/booking') ? 'text-blue-500' : 'text-gray-500'
+                    href="/booking/vehicle"
+                    className={`flex flex-col items-center gap-1 px-4 py-1 ${pathname.startsWith('/booking') ? 'text-indigo-600' : 'text-gray-500'
                         }`}
                 >
                     <FiCalendar className="w-5 h-5" />

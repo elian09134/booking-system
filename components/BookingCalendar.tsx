@@ -93,7 +93,7 @@ export default function BookingCalendar({ bookedDates }: BookingCalendarProps) {
     const getBookingColor = (itemType: string) => {
         switch (itemType) {
             case 'vehicle':
-                return 'bg-blue-600'
+                return 'bg-indigo-600'
             default:
                 return 'bg-gray-500'
         }
@@ -189,7 +189,7 @@ export default function BookingCalendar({ bookedDates }: BookingCalendarProps) {
             <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex flex-wrap gap-3 text-xs">
                     <div className="flex items-center gap-1.5">
-                        <div className="w-3 h-3 rounded bg-blue-600"></div>
+                        <div className="w-3 h-3 rounded bg-indigo-600"></div>
                         <span>Kendaraan</span>
                     </div>
                     <div className="flex items-center gap-1.5">

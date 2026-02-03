@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { FiArrowLeft, FiTruck, FiCalendar, FiClock, FiCheck, FiAlertCircle, FiNavigation } from 'react-icons/fi'
+import { FiArrowLeft, FiTruck, FiCalendar, FiClock, FiCheck, FiAlertCircle, FiNavigation, FiUser, FiBriefcase, FiMapPin } from 'react-icons/fi'
 import Navbar from '@/components/Navbar'
 
 interface Vehicle {
@@ -12,6 +12,7 @@ interface Vehicle {
     type: string
     brand?: string
     year?: number
+    plate_number?: string
 }
 
 export default function VehicleBookingPage() {
@@ -21,6 +22,20 @@ export default function VehicleBookingPage() {
     const [error, setError] = useState('')
     const [vehicles, setVehicles] = useState<Vehicle[]>([])
     const [loadingVehicles, setLoadingVehicles] = useState(true)
+
+    // Form State
+    const [formData, setFormData] = useState({
+        requester_name: '',
+        division: '',
+        purpose: '',
+        destination: '',
+        vehicle: '', // ID
+        start_date: '',
+        start_time: '',
+        end_date: '',
+        end_time: '',
+        duration_type: 'hours',
+    })
 
     useEffect(() => {
         fetchVehicles()
@@ -40,19 +55,6 @@ export default function VehicleBookingPage() {
         }
     }
 
-    const [formData, setFormData] = useState({
-        requester_name: '',
-        division: '',
-        purpose: '',
-        destination: '',
-        vehicle: '',
-        start_date: '',
-        start_time: '',
-        end_date: '',
-        end_time: '',
-        duration_type: 'hours',
-    })
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData({
             ...formData,
@@ -60,10 +62,20 @@ export default function VehicleBookingPage() {
         })
     }
 
+    const selectVehicle = (id: string) => {
+        setFormData({ ...formData, vehicle: id })
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
         setError('')
+
+        if (!formData.vehicle) {
+            setError('Silakan pilih kendaraan terlebih dahulu')
+            setLoading(false)
+            return
+        }
 
         try {
             const startDatetime = `${formData.start_date}T${formData.start_time}:00`
@@ -112,8 +124,8 @@ export default function VehicleBookingPage() {
             <>
                 <Navbar />
                 <main className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-                    <div className="glass-card p-12 text-center max-w-md fade-in">
-                        <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                    <div className="glass-card p-12 text-center max-w-md fade-in w-full">
+                        <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-emerald-500/10 flex items-center justify-center animate-bounce">
                             <FiCheck className="w-10 h-10 text-emerald-500" />
                         </div>
                         <h2 className="text-2xl font-bold mb-4">Booking Berhasil!</h2>
@@ -132,212 +144,259 @@ export default function VehicleBookingPage() {
         <>
             <Navbar />
             <main className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-2xl mx-auto">
-                    {/* Back Button */}
-                    <Link href="/booking" className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 mb-8 transition-colors">
-                        <FiArrowLeft className="w-4 h-4" />
-                        <span>Kembali</span>
-                    </Link>
-
+                <div className="max-w-7xl mx-auto">
                     {/* Header */}
-                    <div className="glass-card p-6 mb-8 flex items-center gap-4">
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white shrink-0">
-                            <FiTruck className="w-8 h-8" />
-                        </div>
-                        <div>
-                            <h1 className="text-2xl font-bold">Kendaraan Operasional</h1>
-                            <p className="text-gray-500 dark:text-gray-400">Booking kendaraan untuk keperluan dinas</p>
-                        </div>
+                    <div className="mb-8 fade-in">
+                        <Link href="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-indigo-600 mb-4 transition-colors">
+                            <FiArrowLeft className="w-4 h-4" />
+                            <span>Kembali ke Beranda</span>
+                        </Link>
+                        <h1 className="text-3xl font-bold mb-2">Form Peminjaman Kendaraan</h1>
+                        <p className="text-gray-500">Isi formulir di bawah untuk mengajukan peminjaman kendaraan operasional.</p>
                     </div>
 
-                    {/* Form */}
-                    <form onSubmit={handleSubmit} className="glass-card p-8">
-                        <h2 className="text-xl font-bold mb-6">Form Booking</h2>
-
-                        {error && (
-                            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-500">
-                                <FiAlertCircle className="w-5 h-5 shrink-0" />
-                                <span>{error}</span>
-                            </div>
-                        )}
-
-                        <div className="space-y-6">
-                            {/* Vehicle Selection */}
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Pilih Kendaraan *</label>
-                                <select
-                                    name="vehicle"
-                                    value={formData.vehicle}
-                                    onChange={handleChange}
-                                    className="input-field"
-                                    required
-                                    disabled={loadingVehicles}
-                                >
-                                    <option value="">{loadingVehicles ? 'Memuat data...' : '-- Pilih Kendaraan --'}</option>
-                                    {vehicles.map((vehicle) => (
-                                        <option key={vehicle.id} value={vehicle.id}>
-                                            {vehicle.brand} {vehicle.name} {vehicle.year ? `(${vehicle.year})` : ''} - {vehicle.type}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            {/* Requester Name */}
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Nama Pemohon *</label>
-                                <input
-                                    type="text"
-                                    name="requester_name"
-                                    value={formData.requester_name}
-                                    onChange={handleChange}
-                                    className="input-field"
-                                    placeholder="Masukkan nama lengkap"
-                                    required
-                                />
-                            </div>
-
-                            {/* Division */}
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Divisi *</label>
-                                <input
-                                    type="text"
-                                    name="division"
-                                    value={formData.division}
-                                    onChange={handleChange}
-                                    className="input-field"
-                                    placeholder="Masukkan nama divisi"
-                                    required
-                                />
-                            </div>
-
-                            {/* Purpose */}
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Keperluan *</label>
-                                <textarea
-                                    name="purpose"
-                                    value={formData.purpose}
-                                    onChange={handleChange}
-                                    className="input-field min-h-[100px]"
-                                    placeholder="Jelaskan keperluan penggunaan kendaraan"
-                                    required
-                                />
-                            </div>
-
-                            {/* Destination */}
-                            <div>
-                                <label className="block text-sm font-medium mb-2">
-                                    <FiNavigation className="inline w-4 h-4 mr-1" />
-                                    Tujuan *
-                                </label>
-                                <input
-                                    type="text"
-                                    name="destination"
-                                    value={formData.destination}
-                                    onChange={handleChange}
-                                    className="input-field"
-                                    placeholder="Masukkan tujuan perjalanan"
-                                    required
-                                />
-                            </div>
-
-                            {/* Duration Type */}
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Tipe Durasi *</label>
-                                <select
-                                    name="duration_type"
-                                    value={formData.duration_type}
-                                    onChange={handleChange}
-                                    className="input-field"
-                                    required
-                                >
-                                    <option value="hours">Hitungan Jam</option>
-                                    <option value="days">Hitungan Hari</option>
-                                </select>
-                            </div>
-
-                            {/* Start Date & Time */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mobile-stack">
-                                <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                        <FiCalendar className="inline w-4 h-4 mr-1" />
-                                        Tanggal Mulai *
-                                    </label>
-                                    <input
-                                        type="date"
-                                        name="start_date"
-                                        value={formData.start_date}
-                                        onChange={handleChange}
-                                        className="input-field"
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                        <FiClock className="inline w-4 h-4 mr-1" />
-                                        Jam Mulai *
-                                    </label>
-                                    <input
-                                        type="time"
-                                        name="start_time"
-                                        value={formData.start_time}
-                                        onChange={handleChange}
-                                        className="input-field"
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            {/* End Date & Time */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mobile-stack">
-                                <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                        <FiCalendar className="inline w-4 h-4 mr-1" />
-                                        Tanggal Selesai *
-                                    </label>
-                                    <input
-                                        type="date"
-                                        name="end_date"
-                                        value={formData.end_date}
-                                        onChange={handleChange}
-                                        className="input-field"
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                        <FiClock className="inline w-4 h-4 mr-1" />
-                                        Jam Selesai *
-                                    </label>
-                                    <input
-                                        type="time"
-                                        name="end_time"
-                                        value={formData.end_time}
-                                        onChange={handleChange}
-                                        className="input-field"
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Submit Button */}
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="btn btn-primary w-full"
-                            >
-                                {loading ? (
-                                    <>
-                                        <div className="spinner w-5 h-5"></div>
-                                        <span>Memproses...</span>
-                                    </>
+                    <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-8 fade-in">
+                        
+                        {/* LEFT COLUMN: Vehicle Selection */}
+                        <div className="lg:col-span-7 space-y-6">
+                            <div className="glass-card p-6">
+                                <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                                    <FiTruck className="text-indigo-600" />
+                                    1. Pilih Kendaraan
+                                </h2>
+                                
+                                {loadingVehicles ? (
+                                    <div className="p-8 text-center">
+                                        <div className="spinner mx-auto mb-2"></div>
+                                        <p className="text-sm text-gray-400">Memuat daftar kendaraan...</p>
+                                    </div>
                                 ) : (
-                                    <>
-                                        <FiCheck className="w-5 h-5" />
-                                        <span>Ajukan Booking</span>
-                                    </>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {vehicles.map((vehicle) => {
+                                            const isSelected = formData.vehicle === vehicle.id
+                                            return (
+                                                <div
+                                                    key={vehicle.id}
+                                                    onClick={() => selectVehicle(vehicle.id)}
+                                                    className={`
+                                                        relative p-4 rounded-xl border-2 cursor-pointer transition-all hover:shadow-lg group
+                                                        ${isSelected 
+                                                            ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 shadow-md' 
+                                                            : 'border-transparent bg-white dark:bg-slate-800 hover:border-gray-200 dark:hover:border-slate-700 shadow-sm'}
+                                                    `}
+                                                >
+                                                    <div className="flex items-start justify-between mb-2">
+                                                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${isSelected ? 'bg-indigo-500 text-white' : 'bg-gray-100 text-gray-500'}`}>
+                                                            <FiTruck className="w-5 h-5" />
+                                                        </div>
+                                                        {isSelected && <FiCheck className="w-6 h-6 text-indigo-500" />}
+                                                    </div>
+                                                    <h3 className={`font-bold ${isSelected ? 'text-indigo-900 dark:text-indigo-100' : 'text-gray-900 dark:text-white'}`}>
+                                                        {vehicle.brand} {vehicle.name}
+                                                    </h3>
+                                                    <div className="flex items-center gap-2 mt-1">
+                                                        <span className="text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-mono">
+                                                            {vehicle.plate_number || 'No Plate'}
+                                                        </span>
+                                                        <span className="text-xs text-gray-500">{vehicle.type}</span>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
                                 )}
-                            </button>
+                                {error && !formData.vehicle && (
+                                    <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                                        <FiAlertCircle /> Pilih salah satu kendaraan
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Date & Time Selection */}
+                            <div className="glass-card p-6">
+                                <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                                    <FiCalendar className="text-indigo-600" />
+                                    2. Waktu Peminjaman
+                                </h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-4">
+                                        <label className="text-sm font-medium text-gray-500 uppercase tracking-wider">Mulai</label>
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="date"
+                                                name="start_date"
+                                                value={formData.start_date}
+                                                onChange={handleChange}
+                                                className="input-field flex-1"
+                                                required
+                                            />
+                                            <input
+                                                type="time"
+                                                name="start_time"
+                                                value={formData.start_time}
+                                                onChange={handleChange}
+                                                className="input-field w-24"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <label className="text-sm font-medium text-gray-500 uppercase tracking-wider">Selesai</label>
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="date"
+                                                name="end_date"
+                                                value={formData.end_date}
+                                                onChange={handleChange}
+                                                className="input-field flex-1"
+                                                required
+                                            />
+                                            <input
+                                                type="time"
+                                                name="end_time"
+                                                value={formData.end_time}
+                                                onChange={handleChange}
+                                                className="input-field w-24"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                                    <label className="text-sm text-gray-500 mb-1 block">Tipe Durasi</label>
+                                    <div className="flex gap-4">
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input 
+                                                type="radio" 
+                                                name="duration_type" 
+                                                value="hours" 
+                                                checked={formData.duration_type === 'hours'}
+                                                onChange={handleChange}
+                                                className="w-4 h-4 text-indigo-600"
+                                            />
+                                            <span className="text-sm">Jam (Harian)</span>
+                                        </label>
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input 
+                                                type="radio" 
+                                                name="duration_type" 
+                                                value="days" 
+                                                checked={formData.duration_type === 'days'}
+                                                onChange={handleChange}
+                                                className="w-4 h-4 text-indigo-600"
+                                            />
+                                            <span className="text-sm">Hari (Luar Kota)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        {/* RIGHT COLUMN: User Details & Summary */}
+                        <div className="lg:col-span-5 space-y-6">
+                            <div className="glass-card p-6 sticky top-24">
+                                <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                                    <FiUser className="text-indigo-600" />
+                                    3. Data Peminjam
+                                </h2>
+                                
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Nama Lengkap</label>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <FiUser className="text-gray-400" />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                name="requester_name"
+                                                value={formData.requester_name}
+                                                onChange={handleChange}
+                                                className="input-field pl-10"
+                                                placeholder="Nama Anda"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Divisi</label>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <FiBriefcase className="text-gray-400" />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                name="division"
+                                                value={formData.division}
+                                                onChange={handleChange}
+                                                className="input-field pl-10"
+                                                placeholder="Divisi Anda"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Tujuan</label>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <FiMapPin className="text-gray-400" />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                name="destination"
+                                                value={formData.destination}
+                                                onChange={handleChange}
+                                                className="input-field pl-10"
+                                                placeholder="Lokasi tujuan"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Keperluan</label>
+                                        <textarea
+                                            name="purpose"
+                                            value={formData.purpose}
+                                            onChange={handleChange}
+                                            className="input-field min-h-[100px]"
+                                            placeholder="Jelaskan detail keperluan..."
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                {error && (
+                                    <div className="mt-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg flex items-center gap-2">
+                                        <FiAlertCircle className="shrink-0" />
+                                        {error}
+                                    </div>
+                                )}
+
+                                <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
+                                    <button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="btn btn-primary w-full py-4 text-lg shadow-lg hover:shadow-indigo-500/30"
+                                    >
+                                        {loading ? (
+                                            <div className="flex items-center gap-2">
+                                                <div className="spinner w-5 h-5 border-white border-t-transparent"></div>
+                                                <span>Memproses...</span>
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center gap-2">
+                                                <span>Ajukan Peminjaman</span>
+                                                <FiArrowLeft className="rotate-180" />
+                                            </div>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                     </form>
                 </div>
             </main>

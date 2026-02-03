@@ -1,11 +1,6 @@
 
-import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
-
-// Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-const supabase = createClient(supabaseUrl, supabaseKey)
+import { supabaseAdmin } from '@/lib/supabase-admin'
 
 export async function GET(
     request: Request,
@@ -15,7 +10,7 @@ export async function GET(
         const { id } = await params
 
         // Fetch services
-        const { data: services, error } = await supabase
+        const { data: services, error } = await supabaseAdmin
             .from('vehicle_services')
             .select('*')
             .eq('vehicle_id', id)
@@ -24,7 +19,7 @@ export async function GET(
         if (error) throw error
 
         // Fetch vehicle details too for the header
-        const { data: vehicle, error: vehicleError } = await supabase
+        const { data: vehicle, error: vehicleError } = await supabaseAdmin
             .from('vehicles')
             .select('*')
             .eq('id', id)
@@ -51,7 +46,7 @@ export async function POST(
         const body = await request.json()
         const { service_date, service_type, description, cost, odometer_reading } = body
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from('vehicle_services')
             .insert([
                 {

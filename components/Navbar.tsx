@@ -15,7 +15,7 @@ export default function Navbar() {
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
                             <FiCalendar className="w-5 h-5 text-white" />
                         </div>
                         <span className="text-xl font-bold gradient-text">BookingApp</span>
@@ -26,32 +26,32 @@ export default function Navbar() {
                         <Link
                             href="/"
                             className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${isActive('/')
-                                    ? 'bg-blue-500/10 text-blue-500'
-                                    : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                                    ? 'bg-indigo-500/10 text-indigo-600 font-semibold'
+                                    : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600'
                                 }`}
                         >
                             <FiHome className="w-4 h-4" />
-                            <span className="font-medium">Beranda</span>
+                            <span>Beranda</span>
                         </Link>
                         <Link
                             href="/booking"
                             className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${pathname.startsWith('/booking')
-                                    ? 'bg-blue-500/10 text-blue-500'
-                                    : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                                    ? 'bg-indigo-500/10 text-indigo-600 font-semibold'
+                                    : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600'
                                 }`}
                         >
                             <FiCalendar className="w-4 h-4" />
-                            <span className="font-medium">Booking</span>
+                            <span>Booking</span>
                         </Link>
                         <Link
                             href="/status"
                             className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${isActive('/status')
-                                    ? 'bg-blue-500/10 text-blue-500'
-                                    : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                                    ? 'bg-indigo-500/10 text-indigo-600 font-semibold'
+                                    : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600'
                                 }`}
                         >
                             <FiSearch className="w-4 h-4" />
-                            <span className="font-medium">Cek Status</span>
+                            <span>Cek Status</span>
                         </Link>
                     </div>
 

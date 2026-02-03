@@ -190,33 +190,33 @@ export default function HomePage() {
 
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-            <div className="glass-card p-4 text-center hover-card">
-              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                <FiLoader className="w-5 h-5 text-blue-500" />
+            <div className="glass-card p-4 text-center hover-card group">
+              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-indigo-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <FiLoader className="w-5 h-5 text-indigo-500" />
               </div>
-              <p className="text-2xl font-bold text-blue-500">{loading ? '-' : stats.total}</p>
-              <p className="text-xs text-gray-500">Total Request</p>
+              <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{loading ? '-' : stats.total}</p>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Request</p>
             </div>
-            <div className="glass-card p-4 text-center hover-card">
-              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-amber-500/10 flex items-center justify-center">
+            <div className="glass-card p-4 text-center hover-card group">
+              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-amber-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <FiClock className="w-5 h-5 text-amber-500" />
               </div>
-              <p className="text-2xl font-bold text-amber-500">{loading ? '-' : stats.pending}</p>
-              <p className="text-xs text-gray-500">Pending</p>
+              <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">{loading ? '-' : stats.pending}</p>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Pending</p>
             </div>
-            <div className="glass-card p-4 text-center hover-card">
-              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+            <div className="glass-card p-4 text-center hover-card group">
+              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-emerald-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <FiCheckCircle className="w-5 h-5 text-emerald-500" />
               </div>
-              <p className="text-2xl font-bold text-emerald-500">{loading ? '-' : stats.approved}</p>
-              <p className="text-xs text-gray-500">Approved</p>
+              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{loading ? '-' : stats.approved}</p>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Approved</p>
             </div>
-            <div className="glass-card p-4 text-center hover-card">
-              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-red-500/10 flex items-center justify-center">
-                <FiXCircle className="w-5 h-5 text-red-500" />
+            <div className="glass-card p-4 text-center hover-card group">
+              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-rose-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <FiXCircle className="w-5 h-5 text-rose-500" />
               </div>
-              <p className="text-2xl font-bold text-red-500">{loading ? '-' : stats.rejected}</p>
-              <p className="text-xs text-gray-500">Rejected</p>
+              <p className="text-2xl font-bold text-rose-600 dark:text-rose-400">{loading ? '-' : stats.rejected}</p>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Rejected</p>
             </div>
           </div>
 

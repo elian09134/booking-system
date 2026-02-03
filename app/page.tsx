@@ -28,6 +28,8 @@ interface BookedDate {
   item_type: string
   item_name: string
   status: string
+  requester_name: string
+  purpose: string
 }
 
 export default function HomePage() {
@@ -71,6 +73,8 @@ export default function HomePage() {
             item_type: b.item_type,
             item_name: b.item_name,
             status: b.status,
+            requester_name: b.requester_name,
+            purpose: b.purpose,
           }
         })
         setBookedDates(dates)

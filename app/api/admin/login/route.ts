@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase-admin'
 import bcrypt from 'bcryptjs'
 
 export async function POST(request: NextRequest) {
@@ -11,8 +11,8 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Username dan password wajib diisi' }, { status: 400 })
         }
 
-        // Get admin by username
-        const { data: admin, error } = await supabase
+        // Get admin by username (Using Admin Client to bypass RLS)
+        const { data: admin, error } = await supabaseAdmin
             .from('admins')
             .select('*')
             .eq('username', username)

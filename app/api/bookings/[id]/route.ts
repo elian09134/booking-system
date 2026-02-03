@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase-admin'
 
 // PATCH - Update booking status
 export async function PATCH(
@@ -15,7 +15,7 @@ export async function PATCH(
             return NextResponse.json({ error: 'Status tidak valid' }, { status: 400 })
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from('bookings')
             .update({ status, updated_at: new Date().toISOString() })
             .eq('id', id)
@@ -46,7 +46,7 @@ export async function GET(
     try {
         const { id } = await params
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from('bookings')
             .select('*')
             .eq('id', id)
@@ -76,7 +76,7 @@ export async function DELETE(
     try {
         const { id } = await params
 
-        const { error } = await supabase
+        const { error } = await supabaseAdmin
             .from('bookings')
             .delete()
             .eq('id', id)

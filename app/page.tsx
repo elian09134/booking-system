@@ -2,19 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { FiUsers, FiMapPin, FiTruck, FiArrowRight, FiClock, FiCheckCircle, FiXCircle, FiLoader, FiCalendar, FiSquare } from 'react-icons/fi'
+import { FiTruck, FiArrowRight, FiCalendar, FiClock, FiSearch, FiPlus } from 'react-icons/fi'
 import Navbar from '@/components/Navbar'
 import BookingCalendar from '@/components/BookingCalendar'
 import StatusBadge from '@/components/StatusBadge'
-import { format, parseISO } from 'date-fns'
-import { id } from 'date-fns/locale'
-
-interface Stats {
-  total: number
-  pending: number
-  approved: number
-  rejected: number
-}
+import { format } from 'date-fns'
+import { id as idLocale } from 'date-fns/locale'
 
 interface Booking {
   id: string
@@ -38,7 +31,6 @@ interface BookedDate {
 }
 
 export default function HomePage() {
-  const [stats, setStats] = useState<Stats>({ total: 0, pending: 0, approved: 0, rejected: 0 })
   const [recentBookings, setRecentBookings] = useState<Booking[]>([])
   const [bookedDates, setBookedDates] = useState<BookedDate[]>([])
   const [loading, setLoading] = useState(true)
@@ -49,13 +41,6 @@ export default function HomePage() {
 
   const fetchData = async () => {
     try {
-      // Fetch stats
-      const statsRes = await fetch('/api/admin/stats')
-      if (statsRes.ok) {
-        const statsData = await statsRes.json()
-        setStats(statsData.stats)
-      }
-
       // Fetch recent bookings
       const bookingsRes = await fetch('/api/bookings')
       if (bookingsRes.ok) {
@@ -63,17 +48,15 @@ export default function HomePage() {
         const bookings = bookingsData.bookings || []
         setRecentBookings(bookings.slice(0, 5)) // Get 5 most recent
 
-        // Transform for calendar - fix malformed dates
+        // Transform for calendar
         const dates: BookedDate[] = bookings.map((b: Booking) => {
-          // Parse date handling malformed years like 60202 -> 2026
+          // Robust date parsing
           const parseDate = (dateStr: string): Date => {
             const match = dateStr.match(/(\d{4,})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/)
             if (match) {
               let year = match[1]
-              if (year.length > 4) {
-                year = year.slice(-4)
-              }
-              const month = parseInt(match[2]) - 1 // JS months are 0-indexed
+              if (year.length > 4) year = year.slice(-4)
+              const month = parseInt(match[2]) - 1
               const day = parseInt(match[3])
               const hour = parseInt(match[4])
               const minute = parseInt(match[5])
@@ -99,208 +82,146 @@ export default function HomePage() {
     }
   }
 
-  const getItemIcon = (itemType: string) => {
-    switch (itemType) {
-      case 'vehicle':
-        return <FiTruck className="w-4 h-4" />
-      default:
-        return <FiTruck className="w-4 h-4" />
-    }
-  }
-
-  const getItemGradient = (itemType: string) => {
-    switch (itemType) {
-      case 'vehicle':
-        return 'from-indigo-500 to-violet-500'
-      default:
-        return 'from-gray-500 to-gray-600'
-    }
-  }
-
   const formatDateTime = (datetime: string) => {
     try {
-      // Extract date parts from ISO string like "60202-02-20T09:00:00+00:00"
-      // If the year is malformed (more than 4 digits), try to extract correctly
-      const match = datetime.match(/(\d{4,})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/)
-      if (match) {
-        let year = match[1]
-        // Fix malformed year (e.g., 60202 should be 2026)
-        if (year.length > 4) {
-          // Take the last 4 characters as the year
-          year = year.slice(-4)
-        }
-        const month = parseInt(match[2])
-        const day = match[3]
-        const hour = match[4]
-        const minute = match[5]
-
-        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
-        return `${day} ${monthNames[month - 1]} ${year}, ${hour}:${minute}`
-      }
-
-      // Fallback to standard parsing
-      const date = new Date(datetime)
-      if (isNaN(date.getTime())) {
-        return datetime
-      }
-      return format(date, 'dd MMM yyyy, HH:mm', { locale: id })
+      // Robust date parsing logic (same as above for consistency if needed, or use date-fns directly if string is ISO)
+       const date = new Date(datetime)
+       if(isNaN(date.getTime())) return datetime;
+       return format(date, 'd MMM, HH:mm', { locale: idLocale })
     } catch {
       return datetime
     }
   }
 
-  const bookingOptions = [
-    {
-      id: 'vehicle',
-      title: 'Booking Kendaraan',
-      description: 'Xpander, Xenia, Livina, Avanza, Voxy',
-      icon: <FiTruck className="w-8 h-8" />,
-      gradient: 'from-blue-600 to-indigo-600',
-      href: '/booking/vehicle',
-    },
-  ]
-
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+      <main className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8 bg-gray-50/50">
         <div className="max-w-6xl mx-auto">
-          {/* Hero Section */}
-          <div className="text-center mb-12 fade-in">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-              <span className="gradient-text">Booking System</span>
-            </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Reservasi kendaraan operasional perusahaan dengan mudah dan cepat
-            </p>
-          </div>
-
-          {/* Quick Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-            <div className="glass-card p-4 text-center hover-card group">
-              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-indigo-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <FiLoader className="w-5 h-5 text-indigo-500" />
-              </div>
-              <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{loading ? '-' : stats.total}</p>
-              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Request</p>
+          
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Dashboard Kendaraan</h1>
+              <p className="text-gray-500 mt-1">Kelola dan pantau penggunaan kendaraan operasional.</p>
             </div>
-            <div className="glass-card p-4 text-center hover-card group">
-              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-amber-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <FiClock className="w-5 h-5 text-amber-500" />
-              </div>
-              <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">{loading ? '-' : stats.pending}</p>
-              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Pending</p>
-            </div>
-            <div className="glass-card p-4 text-center hover-card group">
-              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-emerald-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <FiCheckCircle className="w-5 h-5 text-emerald-500" />
-              </div>
-              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{loading ? '-' : stats.approved}</p>
-              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Approved</p>
-            </div>
-            <div className="glass-card p-4 text-center hover-card group">
-              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-rose-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <FiXCircle className="w-5 h-5 text-rose-500" />
-              </div>
-              <p className="text-2xl font-bold text-rose-600 dark:text-rose-400">{loading ? '-' : stats.rejected}</p>
-              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Rejected</p>
+            <div className="flex gap-3">
+              <Link 
+                href="/status"
+                className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm flex items-center gap-2 shadow-sm"
+              >
+                <FiSearch className="w-4 h-4" />
+                Cek Status
+              </Link>
+              <Link 
+                href="/booking/vehicle"
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium text-sm flex items-center gap-2 shadow-sm shadow-indigo-200"
+              >
+                <FiPlus className="w-4 h-4" />
+                Booking Baru
+              </Link>
             </div>
           </div>
 
-          {/* Main Content Grid */}
-          <div className="grid lg:grid-cols-3 gap-6 mb-12">
-            {/* Calendar */}
-            <div className="lg:col-span-1">
-              <h2 className="text-xl font-bold mb-4">📅 Kalender Booking</h2>
-              <BookingCalendar bookedDates={bookedDates} />
-            </div>
-
-            {/* Booking Options & Recent */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Booking Options */}
-              <div>
-                <h2 className="text-xl font-bold mb-4">🎯 Pilih Item untuk Booking</h2>
-                <div className="grid sm:grid-cols-3 gap-4">
-                  {bookingOptions.map((option, index) => (
-                    <Link
-                      key={option.id}
-                      href={option.href}
-                      className="glass-card p-4 hover-card group cursor-pointer fade-in"
-                      style={{ animationDelay: `${index * 100}ms` }}
-                    >
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${option.gradient} flex items-center justify-center text-white mb-3 group-hover:scale-110 transition-transform`}>
-                        {option.icon}
-                      </div>
-                      <h3 className="font-bold mb-1">{option.title}</h3>
-                      <p className="text-gray-500 text-xs mb-2">{option.description}</p>
-                      <div className="flex items-center text-blue-500 text-sm font-medium">
-                        <span>Booking</span>
-                        <FiArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+          <div className="grid lg:grid-cols-12 gap-8">
+            
+            {/* LEFT: Calendar (Availability) */}
+            <div className="lg:col-span-8 space-y-6">
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                 <div className="flex items-center justify-between mb-6">
+                    <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+                        <FiCalendar className="text-gray-400" />
+                        Jadwal Peminjaman
+                    </h2>
+                    <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded text-gray-600">Bulan Ini</span>
+                 </div>
+                 <BookingCalendar bookedDates={bookedDates} />
               </div>
 
-              {/* Recent Bookings */}
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold">📋 Riwayat Booking Terbaru</h2>
-                  <Link href="/status" className="text-blue-500 text-sm hover:underline">
-                    Lihat Semua →
-                  </Link>
-                </div>
-                <div className="glass-card overflow-hidden">
-                  {loading ? (
-                    <div className="p-8 text-center">
-                      <div className="spinner mx-auto mb-2"></div>
-                      <p className="text-sm text-gray-500">Memuat...</p>
-                    </div>
-                  ) : recentBookings.length === 0 ? (
-                    <div className="p-8 text-center">
-                      <FiCalendar className="w-10 h-10 mx-auto mb-2 text-gray-400" />
-                      <p className="text-gray-500">Belum ada booking</p>
-                    </div>
-                  ) : (
-                    <div className="divide-y divide-gray-100 dark:divide-gray-700">
-                      {recentBookings.map((booking) => (
-                        <div key={booking.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                          <div className="flex items-start gap-3">
-                            <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${getItemGradient(booking.item_type)} flex items-center justify-center text-white shrink-0`}>
-                              {getItemIcon(booking.item_type)}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <span className="font-medium text-sm">{booking.item_name}</span>
-                                <StatusBadge status={booking.status} />
-                              </div>
-                              <p className="text-xs text-gray-500 truncate">{booking.purpose}</p>
-                              <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
-                                <span>{booking.requester_name}</span>
-                                <span>•</span>
-                                <span>{formatDateTime(booking.start_datetime)}</span>
-                              </div>
-                            </div>
-                          </div>
+              {/* Booking Promo / Quick Access */}
+              <div className="grid md:grid-cols-2 gap-4">
+                 <Link href="/booking/vehicle" className="group bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl p-6 text-white shadow-md hover:shadow-lg transition-all">
+                    <div className="flex items-start justify-between mb-4">
+                        <div className="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
+                            <FiTruck className="w-6 h-6 text-white" />
                         </div>
-                      ))}
+                        <FiArrowRight className="w-5 h-5 text-white/70 group-hover:translate-x-1 transition-transform" />
                     </div>
-                  )}
-                </div>
+                    <h3 className="text-lg font-semibold mb-1">Booking Kendaraan</h3>
+                    <p className="text-indigo-100 text-sm">Ajukan peminjaman untuk dinas luar atau operasional kantor.</p>
+                 </Link>
+
+                 <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm flex flex-col justify-center items-start">
+                    <h3 className="font-semibold text-gray-900 mb-2">Butuh Bantuan?</h3>
+                    <p className="text-sm text-gray-500 mb-4">Hubungi admin GA jika mengalami kendala booking atau unit tidak tersedia.</p>
+                    <a href="#" className="text-sm font-medium text-indigo-600 hover:text-indigo-700">Hubungi Admin &rarr;</a>
+                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Check Status Section */}
-          <div className="glass-card p-6 sm:p-8 text-center">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4">🔍 Cek Status Booking Anda</h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-6 text-sm sm:text-base">
-              Masukkan nama Anda untuk melihat status booking yang sudah diajukan
-            </p>
-            <Link href="/status" className="btn btn-primary">
-              <FiArrowRight className="w-4 h-4" />
-              Cek Status Sekarang
-            </Link>
+            {/* RIGHT: Recent Activity */}
+            <div className="lg:col-span-4 space-y-6">
+                <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div className="p-5 border-b border-gray-100 flex items-center justify-between">
+                        <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+                            <FiClock className="text-gray-400" />
+                            Aktivitas Terbaru
+                        </h2>
+                        <Link href="/status" className="text-xs text-indigo-600 hover:text-indigo-700 font-medium">Lihat Semua</Link>
+                    </div>
+                    
+                    {loading ? (
+                        <div className="p-8 text-center">
+                            <div className="spinner w-6 h-6 border-indigo-500 border-t-transparent mx-auto"></div>
+                        </div>
+                    ) : recentBookings.length === 0 ? (
+                        <div className="p-8 text-center text-gray-500">
+                            <p className="text-sm">Belum ada aktivitas.</p>
+                        </div>
+                    ) : (
+                        <div className="divide-y divide-gray-50">
+                            {recentBookings.map((booking) => (
+                                <div key={booking.id} className="p-4 hover:bg-gray-50 transition-colors">
+                                    <div className="flex items-start gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center shrink-0 text-gray-500">
+                                            <FiTruck className="w-4 h-4" />
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <div className="flex justify-between items-start mb-1">
+                                                <p className="text-sm font-medium text-gray-900 truncate pr-2">{booking.item_name}</p>
+                                                <StatusBadge status={booking.status} />
+                                            </div>
+                                            <p className="text-xs text-gray-500 truncate mb-1">{booking.purpose}</p>
+                                            <div className="flex items-center gap-2 text-[10px] text-gray-400 uppercase tracking-wide">
+                                                <span>{booking.requester_name}</span>
+                                                <span>•</span>
+                                                <span>{formatDateTime(booking.start_datetime)}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+                
+                {/* Mini Stats (Optional, cleaner) */}
+                <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Informasi</h3>
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-600">Total Armada</span>
+                            <span className="font-medium text-gray-900">5 Unit</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-600">Jam Operasional</span>
+                            <span className="font-medium text-gray-900">08:00 - 17:00</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
           </div>
         </div>
       </main>

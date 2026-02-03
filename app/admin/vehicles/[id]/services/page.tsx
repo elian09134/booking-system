@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { FiArrowLeft, FiPlus, FiCalendar, FiTool, FiDollarSign, FiActivity } from 'react-icons/fi'
 import AdminSidebar from '@/components/AdminSidebar'
 import { format } from 'date-fns'
-import { id } from 'date-fns/locale'
+import { id as idLocale } from 'date-fns/locale'
 
 interface Vehicle {
     id: string
@@ -25,9 +25,9 @@ interface ServiceLog {
     created_at: string
 }
 
-export default function ServiceHistoryPage({ params }: { params: { id: string } }) {
+export default function ServiceHistoryPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter()
-    const { id } = params
+    const { id } = use(params)
     const [vehicle, setVehicle] = useState<Vehicle | null>(null)
     const [services, setServices] = useState<ServiceLog[]>([])
     const [loading, setLoading] = useState(true)
@@ -158,7 +158,7 @@ export default function ServiceHistoryPage({ params }: { params: { id: string } 
                                 <div className="flex flex-col md:flex-row gap-6">
                                     <div className="flex-shrink-0">
                                         <div className="w-16 h-16 rounded-2xl bg-blue-500/20 flex flex-col items-center justify-center text-blue-400 border border-blue-500/30">
-                                            <span className="text-xs font-bold uppercase">{format(new Date(log.service_date), 'MMM', { locale: id })}</span>
+                                            <span className="text-xs font-bold uppercase">{format(new Date(log.service_date), 'MMM', { locale: idLocale })}</span>
                                             <span className="text-2xl font-bold">{format(new Date(log.service_date), 'd')}</span>
                                             <span className="text-xs">{format(new Date(log.service_date), 'yyyy')}</span>
                                         </div>

@@ -9,11 +9,11 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function PATCH(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const body = await request.json()
-        const { id } = params
+        const { id } = await params
 
         // Allow updating any field passed in body
         const { data, error } = await supabase
@@ -37,10 +37,10 @@ export async function PATCH(
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const { id } = params
+        const { id } = await params
 
         const { error } = await supabase
             .from('vehicles')

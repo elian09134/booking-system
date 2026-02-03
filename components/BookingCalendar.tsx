@@ -148,7 +148,7 @@ export default function BookingCalendar({ bookedDates }: BookingCalendarProps) {
                     return (
                         <div
                             key={day.toString()}
-                            className={`min-h-[100px] p-2 rounded-lg flex flex-col items-start justify-start relative transition-all border border-transparent
+                            className={`min-h-[60px] md:min-h-[100px] p-1 md:p-2 rounded-lg flex flex-col items-start justify-start relative transition-all border border-transparent
                 ${isCurrentDay ? 'ring-2 ring-indigo-500 z-10' : ''}
                 ${booked ? getBookingColor(booked.item_type) + ' text-white shadow-sm' : ''}
                 ${pending && !booked ? 'bg-amber-50 text-amber-900 border-amber-200' : ''}
@@ -156,11 +156,11 @@ export default function BookingCalendar({ bookedDates }: BookingCalendarProps) {
               `}
                             title={activeBooking ? `${activeBooking.item_name} (${activeBooking.status === 'approved' ? 'Approved' : 'Pending'})` : ''}
                         >
-                            <span className={`text-sm mb-1 ${booked ? 'font-bold opacity-80' : 'font-medium text-gray-500'}`}>
+                            <span className={`text-xs md:text-sm mb-1 ${booked ? 'font-bold opacity-80' : 'font-medium text-gray-500'}`}>
                                 {format(day, 'd')}
                             </span>
                             {activeBooking && (
-                                <div className={`w-full text-xs font-medium leading-tight px-1.5 py-1 rounded truncate
+                                <div className={`w-full text-[10px] md:text-xs font-medium leading-tight px-1 py-0.5 md:px-1.5 md:py-1 rounded truncate
                                     ${booked ? 'bg-white/20' : 'bg-amber-100 text-amber-800'}
                                 `}>
                                     {activeBooking.item_name}
